@@ -10,7 +10,7 @@ const QuestionSchema = new mongoose.Schema({
   },
   options: {
     type: Array,
-    default:[],
+    default: [],
     required: false,
     index: true,
   },
@@ -18,16 +18,20 @@ const QuestionSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  tags:{
-    type:Array,
-    required:true
+  rand: {
+    type: Number,
+    required: true
+  },
+  tags: {
+    type: Array,
+    required: true
   }
 }, {
-  timestamps: {
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-  },
-});
+    timestamps: {
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt',
+    },
+  });
 
 QuestionSchema.plugin(mongoosePaginate)
 

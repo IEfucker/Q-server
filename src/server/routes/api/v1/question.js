@@ -1,6 +1,8 @@
 'use strict';
-import Question from '../../../models/Question';
+
 import mongoose from "mongoose"
+import Question from '../../../models/Question'
+import Test from '../../../models/Test'
 
 // pagination data pipe
 function dataPipe(res) {
@@ -38,6 +40,7 @@ export default (router) => {
     .post("/question", async ctx => {
       const body = ctx.request.body
       let q = new Question(body)
+      q.rand = Math.random()
       let res = await q.save()
       ctx.body = { data: res }
     })
@@ -63,11 +66,34 @@ export default (router) => {
     // multi delete
     .post("/questions/del", async ctx => {
       const criteria = ctx.request.body
-      console.log(criteria)
       let ids = criteria.id;
-      let res = await Question.deleteMany({ _id: { $in: ids.map(function(id){return mongoose.Types.ObjectId(id)}) } })
-      console.log(res)
-      ctx.body = {data:res}
+      let res = await Question.deleteMany({ _id: { $in: ids.map(function (id) { return mongoose.Types.ObjectId(id) }) } })
+      ctx.body = { data: res }
+    })
+    //make a test
+    .post("/question/makeatest", async ctx => {
+      const tags = ctx.request.body.tags
+      
+      //TODO:how to generate a test
+      let r = Math.random()
+
+      //each test has 10 question
+      let qs = await Question.find({
+        "tags":{$in:tags},
+        "rand":{$gt: r}
+      }).limit(10)
+      
+      if(qs.length<10){
+        // let l = 10 - qs.length
+        console.log(`questions length err: ${qs.length}`)
+      }
+
+      // save questions in test collection
+      
+      
+
+      ctx.body = { data: qs }
+
     })
 
 }
