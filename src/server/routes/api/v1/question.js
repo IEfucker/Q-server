@@ -70,31 +70,6 @@ export default (router) => {
       let res = await Question.deleteMany({ _id: { $in: ids.map(function (id) { return mongoose.Types.ObjectId(id) }) } })
       ctx.body = { data: res }
     })
-    //make a test
-    .post("/question/makeatest", async ctx => {
-      const tags = ctx.request.body.tags
-      
-      //TODO:how to generate a test
-      let r = Math.random()
-
-      //each test has 10 question
-      let qs = await Question.find({
-        "tags":{$in:tags},
-        "rand":{$gt: r}
-      }).limit(10)
-      
-      if(qs.length<10){
-        // let l = 10 - qs.length
-        console.log(`questions length err: ${qs.length}`)
-      }
-
-      // save questions in test collection
-      
-      
-
-      ctx.body = { data: qs }
-
-    })
 
 }
 

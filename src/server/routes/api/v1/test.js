@@ -36,15 +36,15 @@ export default (router) => {
     })
     .post("/qtest", async ctx => {
       const tags = ctx.request.body.tags
-      
       //TODO:how to generate a test
       let r = Math.random()
 
       //each test has 10 question
       let qs = await Question.find({
         "tags":{$in:tags},
-        "rand":{$gt: r}
+        // "rand":{$gt: r}
       }).limit(10)
+      
       
       if(qs.length<10){
         // let l = 10 - qs.length
