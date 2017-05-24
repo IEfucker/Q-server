@@ -41,26 +41,50 @@ export default (router) => {
 
       //each test has 10 question
       let qs = await Question.find({
-        "tags":{$in:tags},
+        "tags": { $in: tags },
         // "rand":{$gt: r}
       }).limit(10)
-      
-      
-      if(qs.length<10){
+
+
+      if (qs.length < 10) {
         // let l = 10 - qs.length
         console.log(`questions length err: ${qs.length}`)
       }
 
       // save questions in test collection
-      let t = new Test({questions:qs})
+      let t = new Test({ questions: qs })
       let res = await t.save()
 
       ctx.body = { data: res }
     })
     .get("/qtest/:id", async ctx => {
       const id = ctx.params.id
-      let q = await Test.findById(id)
-      if (q) ctx.body = { data: q }
+      let t = await Test.findById(id)
+      if (t) {
+        t.questions.forEach((n,i)=>{
+          delete n.correct
+        })
+        ctx.body = { data: t }
+      }
+    })
+    .post("/result/:id", async ctx => {
+      const id = ctx.params.id
+      const criteria = ctx.request.body
+      let t = await Test.findById(id)
+
+      // save user's answer in future
+      let answer = criteria.answer
+      
+
+      if (t) {
+        let results = []
+        t.questions.forEach((n,i)=>{
+          results.push(n.correct)
+        })
+        ctx.body = { data: {
+          results:results
+        } }
+      }
     })
     .put("/qtest/:id", async ctx => {
       // const id = ctx.params.id
