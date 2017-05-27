@@ -61,29 +61,33 @@ export default (router) => {
       const id = ctx.params.id
       let t = await Test.findById(id)
       if (t) {
-        t.questions.forEach((n,i)=>{
+        t.questions.forEach((n, i) => {
           delete n.correct
         })
         ctx.body = { data: t }
       }
     })
-    .post("/result/:id", async ctx => {
-      const id = ctx.params.id
-      const criteria = ctx.request.body
-      let t = await Test.findById(id)
+    .post("/result", async ctx => {
+      const criteria = ctx.request.body,
+        id = criteria.id,
+        answer = criteria.answer,
+        timeCost = criteria.timeCost
 
-      // save user's answer in future
-      let answer = criteria.answer
+      // todo: save user answer and time cost in future
+      // 
       
+      let t = await Test.findById(id)
 
       if (t) {
         let results = []
-        t.questions.forEach((n,i)=>{
+        t.questions.forEach((n, i) => {
           results.push(n.correct)
         })
-        ctx.body = { data: {
-          results:results
-        } }
+        ctx.body = {
+          data: {
+            results: results
+          }
+        }
       }
     })
     .put("/qtest/:id", async ctx => {
